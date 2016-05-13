@@ -29,35 +29,19 @@ with open(csvFile, 'r') as f:
     reader = csv.reader(f)
     hosts = dict((rows[0].strip(),rows[1].strip()) for rows in reader)
 
-#for item in list:
-#    hostname = item["hostname"]
-#    hostname = hostname.strip()
-#
-#    ip = item["ip"]
-#    ip = ip.strip()
-#
-#    hosts[hostname] = ip
-
-for host in hosts:
+for key in hosts.iterkeys():
     app = Application().Start(cmd_line=u'"C:\\Program Files (x86)\\Crestron\\Toolbox\\Toolbox.exe" ')
     installerstoolboxappclass = app.InstallersToolboxAppClass
     installerstoolboxappclass.Wait('ready', timeout=30)
     button = installerstoolboxappclass.Button2
     button.Click()
-    windowsformswindowappa = installerstoolboxappclass[u'6']
-    #windowsformswindowappa.Click()
-    button2 = installerstoolboxappclass.Button2
-    button2.Click()
 
-    window = app.top_window_()
-    window.Click()
+    editWindow = app.Window_(title="Edit Address")
+    editWindow.Wait('ready',timeout=30).TypeKeys(hosts[key]).TypeKeys('{ENTER}')
+    #wineditAddressWindowdow.Wait('ready', timeout=30)
 
-    window.TypeKeys(host.ip)
-    window.TypeKeys("{ENTER}")
-    window.Wait('ready',timeout=30)
-
-    window.TypeKeys("{TAB 5}")
-    window.TypeKeys("{SPACE}")
+    #window.TypeKeys("{TAB 5}")
+    #window.TypeKeys("{SPACE}")
     app.top_window_().DrawOutline()
 
     app.Kill_()
